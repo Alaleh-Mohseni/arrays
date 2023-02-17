@@ -1,4 +1,4 @@
-const productsItem = [
+const productItems = [
     { "parentName": null, "name": "دسته‌بندی‌های دیجی‌کالا" },
     { "parentName": "دسته‌بندی‌های دیجی‌کالا", "name": "کالای دیجیتال" },
     { "parentName": "کالای دیجیتال", "name": "لوازم جانبی گوشی" },
@@ -18,16 +18,16 @@ const productsItem = [
     { "parentName": "دسته‌بندی‌های دیجی‌کالا", "name": "خانه و آشپزخانه" },
 ]
 
+function nestArrayWithRoot(flatArray, root) {
+    const children = flatArray.filter(childItem => childItem.parentName === root.name)
 
-function nested(f) {
-    return f.sort((a, b) => a.name.length < b.name.length ? 1 : a.name.length == b.name.length ? a.name < b.name ? -1 : 1 : -1)
-        .reduce((p, c, i, a) => {
-            let parent = !!c.parentName && a.find(e => e.name === c.parentName);
-            !!parent ? !!parent.subCategories && parent.subCategories.push(c) || (parent.subCategories = [c]) : p.push(c);
-            return p;
-        }, []);
-};
-console.log("\x1b[35m", JSON.stringify(nested(productsItem), null, 2))
+    return {
+        name: root.name,
+        subCategories: children.map(child => nestArrayWithRoot(flatArray, child))
+    }
+}
+
+console.dir(nestArrayWithRoot(productItems, productItems[0]), { depth: Infinity })
 
 // question 15
 console.log('\x1b[31m', '15.nested')
